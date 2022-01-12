@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g, 
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm
+from forms import UserAddForm, LoginForm, MessageForm, UserEditForm
 from models import db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
@@ -216,7 +216,7 @@ def profile():
         flash("Access unauthorized.", "danger")
         return redirect("/")
     
-    form=UserAddForm()
+    form=UserEditForm()
     
     if form.validate_on_submit():
         
@@ -274,15 +274,18 @@ def add_like(message_id):
         return abort(403)
 
     user_likes = g.user.likes
-
+   
     if liked_message in user_likes:
+        
         g.user.likes = [like for like in user_likes if like != liked_message]
     else:
+        
         g.user.likes.append(liked_message)
 
     db.session.commit()
 
     return redirect("/")
+
 
 @app.route('/messages/new', methods=["GET", "POST"])
 def messages_add():
