@@ -13,16 +13,17 @@
                     <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
                     <p>{{ msg.text }}</p>
                 </div>
-            </li>
-            {% if user.id == g.user.id %}
-            <form method="POST" action="/messages/{{ msg.id }}/like" class="messages-like">
-                <button class="
+
+                {% if user.id == g.user.id %}
+                <form method="POST" action="/messages/{{ msg.id }}/like" class="messages-like">
+                    <button class="
                   btn 
                   btn-sm 
                   {{'btn-primary'}}">
                   <i class="fa fa-thumbs-up"></i> 
                 </button>
-            </form>
+                </form>
+            </li>
             {% endif %} {% endfor %}
         </ul>
     </div>

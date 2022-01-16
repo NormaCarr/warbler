@@ -240,9 +240,20 @@ def delete_user():
         flash("Access unauthorized.", "danger")
         return redirect("/")
     
-    do_logout()
+    user=session[CURR_USER_KEY]
+
+    user=User.query.get_or_404(user)
     
-    db.session.delete(g.user)
+    
+    msglist = Message.query.filter_by(user_id=user.id).all()   
+    if msglist:
+       for msg in msglist: 
+          msg = Message.query.get(msg.id)
+          db.session.delete(msg)
+    
+    #do_logout()
+    
+    db.session.delete(user)
     db.session.commit()
 
     return redirect("/signup")
@@ -251,7 +262,7 @@ def delete_user():
 def show_likes(user_id):
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return redirect("/")
+        return redirect(f"/users/{user_id}")
 
     user = User.query.get_or_404(user_id)
     return render_template('users/likes.html', user=user, likes=user.likes)
